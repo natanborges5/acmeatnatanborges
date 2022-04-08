@@ -89,8 +89,8 @@ public class S3Util {
 
     public static AmazonS3 configurar() {
         AWSCredentials credentials = new BasicAWSCredentials(
-                "AKIAUM2L7CEAEAL3D3VR",
-                "+yJG5A0wvedOwDsfem6lpOQojgy3jKuzdgXbjLml");
+                "",
+                "");
 
         AmazonS3 s3 = AmazonS3ClientBuilder.standard()
                 .withCredentials(new AWSStaticCredentialsProvider(credentials))
