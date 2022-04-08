@@ -26,10 +26,6 @@ public class CotacaoController {
         return cotacaoService.obterLista();
     }
 
-//    @GetMapping(value = "/fornecedor/{id}/cotacoes")
-//    public Collection<Cotacao> cotacoesPorFornecedor(@PathVariable Integer id) {
-//        return cotacaoService.obterListaPorFornecedor(id);
-//    }
     @GetMapping(value = "/produto/{idproduto}/cotacoes")
     public Collection<Cotacao> cotacoesPorProduto(@PathVariable Integer id) {
         return cotacaoService.obterListaPorProduto(id);
@@ -42,13 +38,28 @@ public class CotacaoController {
             if(cotacao.getData() == null){
                 cotacao.setData(DateTime.now().toString());
             }
-            Produto produto = produtoService.obterPorId(id);
-//            cotacao.setFornecedor(fornecedorService.obterPorId(id));
+            Produto produto = produtoService.obterPorId(idproduto);
             cotacao.setProduto(produtoService.obterPorId(idproduto));
             cotacaoService.incluir(cotacao);
-            return "Cotacao cadastrado com sucesso "+ produto.getNome() + cotacao.getValor() + cotacao.getData();
+            return "Cotacao cadastrado com sucesso "+ produto.getNome() + " " + cotacao.getValor() +"Reais "+ cotacao.getData();
         }catch (Exception e){
             return "Falha ao cadastrar Cotacao" + cotacao.getValor();
+        }
+    }
+    @PutMapping(value = "/cotacao/{id}/editar")
+    public String editarProduto(@RequestBody Cotacao cotacao,@PathVariable Integer id)  {
+        try{
+            Cotacao cotacaoOld = cotacaoService.obterPorId(id);
+            if (cotacao.getValor() != null){
+                cotacaoOld.setValor(cotacao.getValor());
+            }
+            if (cotacao.getData() != null){
+                cotacaoOld.setData(cotacao.getData());
+            }
+            cotacaoService.incluir(cotacaoOld);
+            return "Cotacao editada com sucesso para o produto " + cotacaoOld.getProduto().getNome() + " " + cotacaoOld.getValor();
+        }catch (Exception e){
+            return "Falha ao editar cotacao";
         }
     }
     @GetMapping(value = "/cotacao/{id}/excluir")

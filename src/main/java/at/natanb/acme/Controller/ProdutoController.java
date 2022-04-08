@@ -28,6 +28,7 @@ public class ProdutoController {
     public Collection<Produto> produtos() {
         return produtoService.obterLista();
     }
+
     @GetMapping(value = "/fornecedor/{id}/produtos")
     public Collection<Produto> produtosPorFornecedor(@PathVariable Integer id) {
         return produtoService.obterListaPorFornecedor(id);
@@ -35,7 +36,7 @@ public class ProdutoController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/fornecedor/{id}/produto/cadastro")
-    public String cadastrarFornecedor(@RequestBody Produto produto,@PathVariable Integer id)  {
+    public String cadastrarProduto(@RequestBody Produto produto,@PathVariable Integer id)  {
         try{
             produto.setFornecedor(fornecedorService.obterPorId(id));
             produtoService.incluir(produto);
@@ -44,7 +45,26 @@ public class ProdutoController {
             return "Falha ao cadastrar Produto" + produto.getNome();
         }
     }
-    @GetMapping(value = "/produto/{id}/excluir")
+    @PutMapping(value = "/produto/{id}/editar")
+    public String editarProduto(@RequestBody Produto produto,@PathVariable Integer id)  {
+        try{
+            Produto produtoOld = produtoService.obterPorId(id);
+            if (produto.getNome() != null){
+                produtoOld.setNome(produto.getNome());
+            }
+            if (produto.getPeso() != null){
+                produtoOld.setPeso(produto.getPeso());
+            }
+            if (produto.getTipo() != null){
+                produtoOld.setTipo(produto.getTipo());
+            }
+            produtoService.incluir(produtoOld);
+            return "Produto editado com sucesso " + produtoOld.getNome();
+        }catch (Exception e){
+            return "Falha ao editar Produto";
+        }
+    }
+    @DeleteMapping(value = "/produto/{id}/excluir")
     public String excluir(@PathVariable Integer id) {
         try{
             produtoService.excluir(id);
@@ -81,7 +101,7 @@ public class ProdutoController {
             return "Falha ao baixar foto do produto";
         }
     }
-    @GetMapping(value = "/produto/{id}/foto/excluir")
+    @DeleteMapping(value = "/produto/{id}/foto/excluir")
     public String removerProdutoFoto(@PathVariable Integer id) {
         try{
             Produto produto = produtoService.obterPorId(id);

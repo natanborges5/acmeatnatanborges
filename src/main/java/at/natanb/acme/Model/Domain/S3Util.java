@@ -18,17 +18,12 @@ public class S3Util {
     private static final String NOMEBUCKET = "acmenatanborges";
 
     public static void excluirObjeto(String nomeark) {
-        AmazonS3 s3 = configurar();
-        s3.deleteObject(NOMEBUCKET, "imagens/"+nomeark);
-    }
-
-    public static void excluirBucket(AmazonS3 s3) {
-
+        System.out.println(nomeark);
         try {
-            s3.deleteBucket(NOMEBUCKET);
-        }
-        catch (AmazonS3Exception ex) {
-            System.out.println(ex.getMessage());
+            AmazonS3 s3 = configurar();
+            s3.deleteObject(NOMEBUCKET, "imagens/" + nomeark);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());;
         }
     }
 
@@ -42,15 +37,6 @@ public class S3Util {
             FileUtils.copyInputStreamToFile(inputStream, new File("C:\\Users\\natan\\Downloads\\"+fotoUrl+".png"));
         } catch (IOException ex) {
             System.out.println(ex.getMessage());;
-        }
-    }
-
-    public static void listarObjetos(AmazonS3 s3) {
-
-        System.out.println("Objetos do bucket " + NOMEBUCKET);
-        ObjectListing objectListing = s3.listObjects(NOMEBUCKET);
-        for (S3ObjectSummary os : objectListing.getObjectSummaries()) {
-            System.out.println(os.getKey());
         }
     }
 
@@ -68,29 +54,12 @@ public class S3Util {
         }
     }
 
-    public static void listarBuckets(AmazonS3 s3) {
 
-        List<Bucket> buckets = s3.listBuckets();
-        System.out.println("Lista de buckes");
-        for (Bucket bucket : buckets) {
-            System.out.println(bucket.getName());
-        }
-    }
-
-    public static void criarBucket(AmazonS3 s3) {
-
-        if (s3.doesBucketExistV2(NOMEBUCKET)) {
-            System.out.println("Bucket já existe");
-            return;
-        }
-        s3.createBucket(NOMEBUCKET);
-        System.out.println("Bucket criado");
-    }
 
     public static AmazonS3 configurar() {
         AWSCredentials credentials = new BasicAWSCredentials(
-                "AKIAUM2L7CEAEAL3D3VR",
-                "+yJG5A0wvedOwDsfem6lpOQojgy3jKuzdgXbjLml");
+                "Acess Key",
+                "+Secret Key");
 
         AmazonS3 s3 = AmazonS3ClientBuilder.standard()
                 .withCredentials(new AWSStaticCredentialsProvider(credentials))
